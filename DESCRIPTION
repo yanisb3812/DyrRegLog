@@ -1,0 +1,15 @@
+Package: DyrRegLog
+Title: Juste un package pour tester
+Version: 0.0.0.9000
+Authors@R: 
+    person("Yanis", "Benreguig", email = "y.benreguig@univ-lyon2.fr", role = c("aut", "cre"))
+    person("Davy", "Darankoum", email = "davy.darankoum@univ-lyon2.fr", role = c("aut", "cre"))
+    person("Rayan", "Moissonnier", email = "rayan.moissonnier@univ-lyon2.fr", role = c("aut", "cre"))
+Description: Package pour tester.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    magrittr,
+    stats
