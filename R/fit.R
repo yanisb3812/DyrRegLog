@@ -192,14 +192,23 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
 }
 
-# print.DyrRegLog <- function(object){
-#   #Affichage du poids du vecteur
-#   cat('Poids du vecteur :', object$vect_Poids, "\n")
-#   #Affichage du biais
-#   cat('Biais :', object$Biais, "\n")
-#   #Affichage du formula
-#   cat('formula :',as.character(object$formula))
-# }
+#' Print Override
+#'
+#' A function to override the print method
+#'
+#' @param object Un objet de classe S3
+#'
+#' @return la fonction renvoie divers elements
+#'
+#' @export
+print.DyrRegLog <- function(object){
+  #Affichage du poids du vecteur
+  cat('Poids du vecteur :', object$vect_Poids, "\n")
+  #Affichage du biais
+  cat('Biais :', object$Biais, "\n")
+  #Affichage du formula
+  cat('formula :',as.character(object$formula))
+}
 # summary.DyrRegLog<-function(object){
 #   #Affichage de deviance
 #   cat('Dernière valeur de déviance : ', object$vecteur_deviance, "\n")
