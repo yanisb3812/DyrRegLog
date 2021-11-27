@@ -1,16 +1,7 @@
 #' Regression logistique
 #' Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique
 #'
-#' @param formula un truc pour tester
-#' @param data un truc pour tester
-#' @param eta un truc pour tester
-#' @param iter_Max un truc pour tester
-#' @param mode un truc pour tester
-#' @param batch_size un truc pour tester
-#' @param tol un truc pour tester
-#' @param coefs un truc pour tester
-#' @param intercept un truc pour tester
-#' @param nb_Coeurs oui oui
+#' @param formula un truc pour tester @param data un truc pour tester @param eta un truc pour tester @param iter_Max un truc pour tester @param mode un truc pour tester @param batch_size un truc pour tester @param tol un truc pour tester @param coefs un truc pour tester @param intercept un truc pour tester @param nb_Coeurs oui oui
 #'
 #' @return la fonction renvoie divers elements
 #' @import parallel
