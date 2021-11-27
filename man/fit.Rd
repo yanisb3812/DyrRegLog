@@ -18,6 +18,27 @@ fit(
   nb_Coeurs = 1
 )
 }
+\arguments{
+\item{formula}{Test.}
+
+\item{data}{Tost.}
+
+\item{eta}{Tist.}
+
+\item{iter_Max}{Tast.}
+
+\item{mode}{Tust.}
+
+\item{batch_size}{Tyst.}
+
+\item{tol}{Tenst.}
+
+\item{coefs}{Tanst.}
+
+\item{intercept}{Tonst.}
+
+\item{nb_Coeurs}{Tinst.}
+}
 \value{
 la fonction renvoie divers elements
 }
