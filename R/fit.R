@@ -192,7 +192,15 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
 }
 
-
+#' Print Override
+#'
+#' A function to override the print method
+#'
+#' @param object Un objet de classe S3
+#'
+#' @return la fonction renvoie divers elements
+#'
+#' @export
 # print.DyrRegLog <- function(object){
 #   #Affichage du poids du vecteur
 #   cat('Poids du vecteur :', object$vect_Poids, "\n")
