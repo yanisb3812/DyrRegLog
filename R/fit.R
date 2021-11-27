@@ -3,7 +3,7 @@
 #' A function to compute logistic regression with the stochastic gradient descent algorithm
 #'
 #' @param formula An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.
-#' @param data An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
+#' @param data A data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
 #' @param eta A demander.
 #' @param iter_Max Maximum iteration realized by the function.
 #' @param mode The mode to be used in fitting the model (Batch_Simple, Mini_Batch, Online). The default mode is Online.
@@ -192,23 +192,15 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
 }
 
-#' Print Override
-#'
-#' A function to override the print method
-#'
-#' @param object Un objet de classe S3
-#'
-#' @return la fonction renvoie divers elements
-#'
-#' @export
-print.DyrRegLog <- function(object){
-  #Affichage du poids du vecteur
-  cat('Poids du vecteur :', object$vect_Poids, "\n")
-  #Affichage du biais
-  cat('Biais :', object$Biais, "\n")
-  #Affichage du formula
-  cat('formula :',as.character(object$formula))
-}
+
+# print.DyrRegLog <- function(object){
+#   #Affichage du poids du vecteur
+#   cat('Poids du vecteur :', object$vect_Poids, "\n")
+#   #Affichage du biais
+#   cat('Biais :', object$Biais, "\n")
+#   #Affichage du formula
+#   cat('formula :',as.character(object$formula))
+# }
 # summary.DyrRegLog<-function(object){
 #   #Affichage de deviance
 #   cat('Dernière valeur de déviance : ', object$vecteur_deviance, "\n")
