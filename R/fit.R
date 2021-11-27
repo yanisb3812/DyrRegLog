@@ -1,16 +1,16 @@
-#' Regression logistique
-#' Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique
+#' Logistic Regression
+#' A function to compute logistic regression with the stochastic gradient descent algorithm
 #'
-#' @param formula Test.
-#' @param data Tost.
-#' @param eta Tist.
-#' @param iter_Max Tast.
-#' @param mode Tust.
-#' @param batch_size Tyst.
-#' @param tol Tenst.
-#' @param coefs Tanst.
-#' @param intercept Tonst.
-#' @param nb_Coeurs Tinst.
+#' @param formula An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.
+#' @param data An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
+#' @param eta A demander.
+#' @param iter_Max Maximum iteration realized by the function.
+#' @param mode The mode to be used in fitting the model (Batch_Simple, Mini_Batch, Online). The default mode is Online.
+#' @param batch_size Size of the batch.
+#' @param tol A demander.
+#' @param coefs A demander.
+#' @param intercept Logical. Should an intercept be included in the null model ?
+#' @param nb_Coeurs Number of chores that have to be used by .
 #'
 #' @return la fonction renvoie divers elements
 #' @import parallel
