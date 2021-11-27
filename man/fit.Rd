@@ -2,8 +2,7 @@
 % Please edit documentation in R/fit.R
 \name{fit}
 \alias{fit}
-\title{Logistic Regression
-A function to compute logistic regression with the stochastic gradient descent algorithm}
+\title{Logistic Regression}
 \usage{
 fit(
   formula,
@@ -43,6 +42,5 @@ fit(
 la fonction renvoie divers elements
 }
 \description{
-Logistic Regression
 A function to compute logistic regression with the stochastic gradient descent algorithm
 }
