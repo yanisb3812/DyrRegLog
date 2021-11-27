@@ -8,7 +8,31 @@
 #' @importFrom stats model.frame
 #'
 #' @export
-fit <- function(formula, data , eta = 0.3 , iter_Max=200,mode="Online",batch_size=10,tol=0.001,coefs=rep(0,(dim(model.frame(formula,data))[2])-1),intercept=0){
+fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=10,tol=0.001,coefs=rep(0,(dim(model.frame(formula,data))[2])-1),intercept=0, nb_Coeurs=1){
+
+  nb_cores_max=detectCores(all.tests = FALSE, logical = TRUE)-1
+  if (nb_Coeurs=="max"){
+    nb_Coeurs=nb_cores_max
+  }
+
+
+  #Gestion des erreurs :
+  if (class(formula)!="formula"){
+    stop("Error : Formula is not Good")
+  }
+  if (length(coefs)==dim(model.frame(formula,data))[2]){
+    stop("Error : Bad dimension for coefs vector")
+  }
+  if (batch_size>=dim(model.frame(formula,data))[1]){
+    stop("Error : Choose a batch size lower or choose mode=Batch_Simple")
+  }
+  if (nb_Coeurs>nb_cores_max){
+    stop("Error : Nb_Coeurs is higher than you have")
+  }
+  if(mode == "Mini_Batch" & batch_size <= 1){
+    stop("Error : Wrong Batch size; Choose a higher one")
+  }
+
 
   #Pour gerer les modulos plus tard
   iter_Max = iter_Max -1
@@ -18,7 +42,7 @@ fit <- function(formula, data , eta = 0.3 , iter_Max=200,mode="Online",batch_siz
   data_formula=model.frame(formula,data)
   y_Complet = data_formula[,1]
   X_Complet=as.matrix(data_formula[,-1])
-  print(coefs)
+  X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la màj de l'intercept
 
 
   #Initialisation des variables et vecteurs
@@ -26,12 +50,19 @@ fit <- function(formula, data , eta = 0.3 , iter_Max=200,mode="Online",batch_siz
   nb_Vars =  ncol(X_Complet)
   deviance=10000
   converge=FALSE
-  vect_W = coefs
-  value_B = intercept
+
+  vect_W_and_Intercept = c(coefs, intercept)
+
+
   iter = 0
   numRow_miniBatch = 0
   vector_deviance=c()
 
+  #PARALLELISATION ****************************
+  #Demarrage des moteurs (workers)
+  clust <- parallel::makeCluster(nb_Coeurs)
+  groupVariables = split(1:nb_Vars, sort((1:nb_Vars)%%nb_Coeurs))
+  # *******************************************
 
   #Debut de la boucle pour la descente de gradient jusqu au nb d iter fixe ou la convergence
   while(iter < iter_Max & converge==FALSE){
@@ -40,6 +71,7 @@ fit <- function(formula, data , eta = 0.3 , iter_Max=200,mode="Online",batch_siz
     if(mode == "Batch_Simple"){
       X = X_Complet
       y = y_Complet
+
     }else if(mode =="Mini_Batch"){
       #Nous prenons en compte le retour au debut lorsque nous avons parcouru nos donnees (meme dans un mini batch)
       if(numRow_miniBatch+batch_size > nb_indiv){
@@ -58,99 +90,94 @@ fit <- function(formula, data , eta = 0.3 , iter_Max=200,mode="Online",batch_siz
       y = y_Complet[(iter%%nb_indiv)+1]
     }else{
       #Permet d'afficher un message d erreur
-      stop("Erreur ! Mauvais choix de mode")
+      stop("Error ! Please, choose an other Mode between those : Online, Batch_Simple, Mini_Batch")
     }
 
 
-    vect_y_predits = X%*%vect_W +value_B
-    #A ce niveau, on a des y_chapeau = w1*xi,1 +w2*xi,2+...+b
+    vect_y_predits = X%*%vect_W_and_Intercept
 
-    log_y_predits = 1 / (1 + exp(-vect_y_predits))
-    #Maintenant, nos y_Chapeau sont des probabilites
+    prob_y_predits = 1 / (1 + exp(-vect_y_predits)) #Maintenant, nos y_Chapeau sont des probabilites
+
+    Erreurs_pred =   prob_y_predits - y
+
+
+    #Gestion si parallélisation ou NON parallélisation
+    if(nb_Coeurs > 1 & mode != "Online"){ #Si nb_Coeurs > 1, On fait un calcul parallele des gradients
+      #partition en blocs des donnees
+      X_blocs = list()
+      for(numBloc in 1:length(groupVariables)){
+        bloc_i = X[,groupVariables[[numBloc]]]
+        X_blocs[[length(X_blocs)+1]] = bloc_i
+      }
+
+      #Application du calcul parallele
+      res_Grad <- parallel::parLapply(clust, X_blocs, fun=calcul_Gradient, nb_rows= nb_indiv, Erreurs_prediction=Erreurs_pred, Type=mode)
+
+      #Concatenation des valeurs de gradients calculees sur chacun des coeurs
+      d_W_and_d_B = c(res_Grad[[1]])
+      for(i in 2:length(res_Grad)){
+        d_W_and_d_B = c(d_W_and_d_B, res_Grad[[i]])
+      }
+    }else{ #Si nb_Coeurs <= 1, on est dans le cas classic : sans parallelisation
+      d_W_and_d_B <- calcul_Gradient(X, nb_indiv, Erreurs_pred, mode)
+    }
+
 
     #On actualise la valeur des coefficients et du biais :
-
-    # W = W - eta*d(W)
-    # B = B - eta*d(B)
-
-    X_Transpo = t(X) # on transpose la matrice X (on a mtn nb_Vars lignes et nb_indiv colonnes)
-    Erreurs_pred = log_y_predits - y
-
-    #Si on est sur du online nous avons un vecteur, sinon nous on avait une matrice
-    if(mode=="Online"){
-      Erreurs_pred=as.vector(Erreurs_pred)
-      d_W = (1/nb_indiv)*(X*Erreurs_pred)
-    }else{
-      d_W = (1/nb_indiv)*(X_Transpo%*%Erreurs_pred)
-    }
-
-    d_b = (1/nb_indiv) * sum(Erreurs_pred)
-
-    vect_W = vect_W - eta*d_W
-    value_B = value_B - eta*d_b
+    vect_W_and_Intercept = vect_W_and_Intercept - eta*d_W_and_d_B
 
 
     #Verifie si on est a la fin d un epoch ou non dans chaque mode
-    #Si oui, calcule la deviance et l ajoute dans un vecteur pour voir si cela converge et permettra egalement de tracer une fonction de cout
+    #Si oui, calcule la deviance et on l'ajoute dans un vecteur pour voir
+    #si cela converge et permettra egalement de tracer une fonction de cout
     if(mode=="Online" & iter%%nb_indiv==0){
-
-      vect_y_predits = X_Complet%*%vect_W +value_B
-      log_y_predits = 1 / (1 + exp(-vect_y_predits))
-      LL= y_Complet * log(log_y_predits) + (1-y_Complet) * log(1-log_y_predits)
+      vect_y_predits = X_Complet%*%vect_W_and_Intercept
+      prob_y_predits = 1 / (1 + exp(-vect_y_predits))
+      LL= y_Complet * log(prob_y_predits) + (1-y_Complet) * log(1-prob_y_predits)
       newdeviance=-2*sum(LL)
       vector_deviance=c(vector_deviance,newdeviance)
-      if ((deviance-newdeviance) < tol){
+      if ((abs(deviance-newdeviance)) < tol){
         converge <- TRUE
-        print(newdeviance)
       }
       deviance <- newdeviance
-    }else if(mode=="Mini_Batch" & iter==(nb_indiv/batch_size)-1){
-      vect_y_predits = X_Complet%*%vect_W +value_B
-      log_y_predits = 1 / (1 + exp(-vect_y_predits))
-      LL= y_Complet * log(log_y_predits) + (1-y_Complet) * log(1-log_y_predits)
+    }else if(mode=="Mini_Batch" & ((nb_indiv%%batch_size!=0 & iter%%(nb_indiv%/%batch_size+1)==0) | (nb_indiv%%batch_size==0 & (iter/batch_size)%%1==0))){
+      vect_y_predits = X_Complet%*%vect_W_and_Intercept
+      prob_y_predits = 1 / (1 + exp(-vect_y_predits))
+      LL= y_Complet * log(prob_y_predits) + (1-y_Complet) * log(1-prob_y_predits)
       newdeviance=-2*sum(LL)
       vector_deviance=c(vector_deviance,newdeviance)
-      if ((deviance-newdeviance) < tol){
+
+      if ((abs(deviance-newdeviance)) < tol){
         converge <- TRUE
         print(iter)
       }
       deviance <- newdeviance
     }else if(mode=="Batch_Simple"){
-      LL= y_Complet * log(log_y_predits) + (1-y_Complet) * log(1-log_y_predits)
+      LL= y_Complet * log(prob_y_predits) + (1-y_Complet) * log(1-prob_y_predits)
       newdeviance=-2*sum(LL)
       vector_deviance=c(vector_deviance,newdeviance)
-      if ((deviance-newdeviance) < tol){
+      if ((abs(deviance-newdeviance)) < tol){
         converge <- TRUE
-        print(iter)
       }
       deviance <- newdeviance
     }
-
 
 
     iter = iter +1
 
   }
 
-  print(vector_deviance)
-  plot(vector_deviance,type='l')
-  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, derniere_deviance = deviance, epochs=iter)
+  #print(vector_deviance)
+  #plot(vector_deviance,type='l')
+
+  #Eteindre les moteurs
+  parallel::stopCluster(clust)
+
+  vect_W = vect_W_and_Intercept[-length(vect_W_and_Intercept)]
+  value_B = vect_W_and_Intercept[length(vect_W_and_Intercept)]
+
+  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1)
   class(objet)<-"DyrRegLog"
   return(objet)
 
-}
-
-print.DyrRegLog<-function(object){
-  #Affichage du poids du vecteur
-  cat('Poids du vecteur :', object$vect_Poids, "\n")
-  #Affichage du biais
-  cat('Biais :', object$Biais, "\n")
-  #Affichage du formula
-  cat('formula :',as.character(object$formula))
-}
-summary.DyrRegLog<-function(object){
-  #Affichage de deviance
-  cat('Dernière valeur de déviance :', object$derniere_deviance, "\n")
-  #Affichage des epochs
-  cat('Epochs :', object$epochs)
 }
