@@ -134,7 +134,7 @@ fit <- function(formula, data , eta = 0.3 , iter_Max=200,mode="Online",batch_siz
 
   print(vector_deviance)
   plot(vector_deviance,type='l')
-  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = data_formula, derniere_deviance = deviance, epochs=iter)
+  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, derniere_deviance = deviance, epochs=iter)
   class(objet)<-"DyrRegLog"
   return(objet)
 
