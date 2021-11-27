@@ -20,7 +20,7 @@ fit(
 \arguments{
 \item{formula}{An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
 
-\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.}
+\item{data}{A data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.}
 
 \item{eta}{A demander.}
 
