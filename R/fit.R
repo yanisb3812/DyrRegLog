@@ -1,6 +1,16 @@
 #' Regression logistique
 #' Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique
 #'
+#' @param formula Test.
+#' @param data Tost.
+#' @param eta Tist.
+#' @param iter_Max Tast.
+#' @param mode Tust.
+#' @param batch_size Tyst.
+#' @param tol Tenst.
+#' @param coefs Tanst.
+#' @param intercept Tonst.
+#' @param nb_Coeurs Tinst.
 #'
 #' @return la fonction renvoie divers elements
 #' @import parallel
