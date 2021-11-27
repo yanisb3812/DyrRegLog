@@ -3,7 +3,7 @@
 #'
 #' @param formula,data,eta,iter_Max,mode,batch_size,tol,coefs,intercept,nb_Coeurs un truc pour tester
 #'
-#' @return la fonction renvoie divers éléments
+#' @return la fonction renvoie divers elements
 #' @import parallel
 #' @importFrom stats model.frame
 #'
@@ -41,7 +41,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   #Transformation sous forme de Matrice pour le calcul matriciel
   data_formula=model.frame(formula,data)
   y_Complet = data_formula[,1]
-  X_Complet=as.matrix(data_formula[,-1])
+  X_Complet=as.matrix(scale(data_formula[,-1]))
   X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la màj de l'intercept
 
 
