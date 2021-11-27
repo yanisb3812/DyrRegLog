@@ -14,14 +14,12 @@ fit(
   batch_size = 10,
   tol = 0.001,
   coefs = rep(0, (dim(model.frame(formula, data))[2]) - 1),
-  intercept = 0
+  intercept = 0,
+  nb_Coeurs = 1
 )
 }
-\arguments{
-\item{formula, data, eta, iter_Max, mode, batch_size, tol, coefs, intercept}{un truc pour tester}
-}
 \value{
-la fonction renvoie divers éléments
+la fonction renvoie divers elements
 }
 \description{
 Regression logistique
