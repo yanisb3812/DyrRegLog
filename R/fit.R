@@ -1,4 +1,5 @@
 #' Logistic Regression
+#'
 #' A function to compute logistic regression with the stochastic gradient descent algorithm
 #'
 #' @param formula An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.
