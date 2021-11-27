@@ -10,7 +10,7 @@
 #' @param tol un truc pour tester
 #' @param coefs un truc pour tester
 #' @param intercept un truc pour tester
-#' @param nb_Coeurs un truc pour tester
+#' @param nb_Coeurs oui oui
 #'
 #' @return la fonction renvoie divers elements
 #' @import parallel
