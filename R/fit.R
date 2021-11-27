@@ -1,10 +1,10 @@
 #' Regression logistique
 #' Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique
 #'
-#' @param formula,data,eta,iter_Max,mode,batch_size,tol,coefs,intercept un truc pour tester
+#' @param formula,data,eta,iter_Max,mode,batch_size,tol,coefs,intercept,nb_Coeurs un truc pour tester
 #'
 #' @return la fonction renvoie divers éléments
-#' @import magrittr
+#' @import parallel
 #' @importFrom stats model.frame
 #'
 #' @export
