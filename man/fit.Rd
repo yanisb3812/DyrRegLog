@@ -2,8 +2,8 @@
 % Please edit documentation in R/fit.R
 \name{fit}
 \alias{fit}
-\title{Regression logistique
-Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique}
+\title{Logistic Regression
+A function to compute logistic regression with the stochastic gradient descent algorithm}
 \usage{
 fit(
   formula,
@@ -19,30 +19,30 @@ fit(
 )
 }
 \arguments{
-\item{formula}{Test.}
+\item{formula}{An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
 
-\item{data}{Tost.}
+\item{data}{An optional data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.}
 
-\item{eta}{Tist.}
+\item{eta}{A demander.}
 
-\item{iter_Max}{Tast.}
+\item{iter_Max}{Maximum iteration realized by the function.}
 
-\item{mode}{Tust.}
+\item{mode}{The mode to be used in fitting the model (Batch_Simple, Mini_Batch, Online). The default mode is Online.}
 
-\item{batch_size}{Tyst.}
+\item{batch_size}{Size of the batch.}
 
-\item{tol}{Tenst.}
+\item{tol}{A demander.}
 
-\item{coefs}{Tanst.}
+\item{coefs}{A demander.}
 
-\item{intercept}{Tonst.}
+\item{intercept}{Logical. Should an intercept be included in the null model ?}
 
-\item{nb_Coeurs}{Tinst.}
+\item{nb_Coeurs}{Number of chores that have to be used by .}
 }
 \value{
 la fonction renvoie divers elements
 }
 \description{
-Regression logistique
-Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique
+Logistic Regression
+A function to compute logistic regression with the stochastic gradient descent algorithm
 }
