@@ -10,7 +10,7 @@
 #' @export
 fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=10,tol=0.001,coefs=rep(0,(dim(model.frame(formula,data))[2])-1),intercept=0, nb_Coeurs=1){
 
-  nb_cores_max=detectCores(all.tests = FALSE, logical = TRUE)-1
+  nb_cores_max=parallel::detectCores(all.tests = FALSE, logical = TRUE)-1
   if (nb_Coeurs=="max"){
     nb_Coeurs=nb_cores_max
   }
