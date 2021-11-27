@@ -181,3 +181,19 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   return(objet)
 
 }
+print.DyrRegLog <- function(object){
+  #Affichage du poids du vecteur
+  cat('Poids du vecteur :', object$vect_Poids, "\n\n")
+  #Affichage du biais
+  cat('Biais :', object$Biais, "\n\n")
+  #Affichage du formula
+  cat('formula :',as.character(object$formula))
+}
+
+summary.DyrRegLog<-function(object){
+  #Affichage de deviance
+  cat('Dernière valeur de déviance : ', object$vecteur_deviance, "\n\n")
+  #Affichage des epochs
+  cat("Nombre d'itération : ", object$nb_iteration)
+  plot(object$vecteur_deviance, type ='l')
+}
