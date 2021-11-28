@@ -22,7 +22,7 @@
 fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=10,tol=0.001,coefs=rep(0,(dim(model.frame(formula,data))[2])-1),intercept=0, nb_Coeurs=1){
 
 
-  tic()
+  tictoc::tic()
   nb_cores_max=parallel::detectCores(all.tests = FALSE, logical = TRUE)-1
   if (nb_Coeurs=="max"){
     nb_Coeurs=nb_cores_max
@@ -214,7 +214,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
   vect_W = vect_W_and_Intercept[-length(vect_W_and_Intercept)]
   value_B = vect_W_and_Intercept[length(vect_W_and_Intercept)]
-  y=toc()
+  y=tictoc::toc()
   time_exe=y$toc-y$tic
 
   objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe)
