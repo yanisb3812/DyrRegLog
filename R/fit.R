@@ -55,7 +55,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   data_formula=model.frame(formula,data)
 
   #RAndomly re-arrange data *****************************************************************************
-  set.seed()
+  #set.seed()
   data_formula <- data_formula[sample(nrow(data_formula)),]
 
   y_Complet = data_formula[,1]
