@@ -15,11 +15,14 @@
 #'
 #' @return la fonction renvoie divers elements
 #' @import parallel
+#' @import tictoc
 #' @importFrom stats model.frame
 #'
 #' @export
 fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=10,tol=0.001,coefs=rep(0,(dim(model.frame(formula,data))[2])-1),intercept=0, nb_Coeurs=1){
 
+
+  tictoc::tic()
   nb_cores_max=parallel::detectCores(all.tests = FALSE, logical = TRUE)-1
   if (nb_Coeurs=="max"){
     nb_Coeurs=nb_cores_max
@@ -50,9 +53,14 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
   #Transformation sous forme de Matrice pour le calcul matriciel
   data_formula=model.frame(formula,data)
+
+  #RAndomly re-arrange data *****************************************************************************
+  #set.seed()
+  data_formula <- data_formula[sample(nrow(data_formula)),]
+
   y_Complet = data_formula[,1]
   X_Complet=as.matrix(scale(data_formula[,-1]))
-  X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la màj de l'intercept
+  X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la maj de l'intercept
 
 
   #Initialisation des variables et vecteurs
@@ -71,7 +79,10 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   #PARALLELISATION ****************************
   #Demarrage des moteurs (workers)
   clust <- parallel::makeCluster(nb_Coeurs)
-  groupVariables = split(1:nb_Vars, sort((1:nb_Vars)%%nb_Coeurs))
+  if(mode == "Batch_Simple"){#Cas Batch simple  *****************************************************************************
+    groupVariables = split(1:nb_indiv, sort((1:nb_indiv))%%nb_Coeurs)
+  }
+
   # *******************************************
 
   #Debut de la boucle pour la descente de gradient jusqu au nb d iter fixe ou la convergence
@@ -108,44 +119,60 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
     prob_y_predits = 1 / (1 + exp(-vect_y_predits)) #Maintenant, nos y_Chapeau sont des probabilites
 
-    Erreurs_pred =   prob_y_predits - y
+    Erreurs_pred =  prob_y_predits - y
+
 
 
     #Gestion si parallélisation ou NON parallélisation
-    if(nb_Coeurs > 1 & mode != "Online"){ #Si nb_Coeurs > 1, On fait un calcul parallele des gradients
+    if(nb_Coeurs > 1 & mode =="Batch_Simple" ){ #Si nb_Coeurs > 1, On fait un calcul parallele des gradients
       #partition en blocs des donnees
       X_blocs = list()
       for(numBloc in 1:length(groupVariables)){
-        bloc_i = X[,groupVariables[[numBloc]]]
+        bloc_i = as.matrix(X[groupVariables[[numBloc]],])
+        bloc_i = cbind(bloc_i, Erreurs_pred[groupVariables[[numBloc]]])
         X_blocs[[length(X_blocs)+1]] = bloc_i
       }
 
       #Application du calcul parallele
-      res_Grad <- parallel::parLapply(clust, X_blocs, fun=calcul_Gradient, nb_rows= nb_indiv, Erreurs_prediction=Erreurs_pred, Type=mode)
+
+
+      res_Grad <- parallel::parLapply(clust, X_blocs, fun=calcul_Gradient, Type=mode,nb_rows=nb_indiv)
 
       #Concatenation des valeurs de gradients calculees sur chacun des coeurs
-      d_W_and_d_B = c(res_Grad[[1]])
-      for(i in 2:length(res_Grad)){
-        d_W_and_d_B = c(d_W_and_d_B, res_Grad[[i]])
-      }
-    }else{ #Si nb_Coeurs <= 1, on est dans le cas classic : sans parallelisation
-      d_W_and_d_B <- calcul_Gradient(X, nb_indiv, Erreurs_pred, mode)
-    }
 
+      d_W_and_d_B = unlist(res_Grad[[1]])
+      for(i in 2:length(res_Grad)){
+        d_W_and_d_B = d_W_and_d_B + unlist(res_Grad[[i]])
+      }
+    }else if (mode =="Online"){ #Si nb_Coeurs <= 1, on est dans le cas classic : sans parallelisation
+      #d_W_and_d_B <- calcul_Gradient(X, nb_indiv, Erreurs_pred, mode)
+
+      X = c(X,Erreurs_pred)
+
+      d_W_and_d_B <- calcul_Gradient(X, mode,nb_indiv)
+
+    }else{
+      X = cbind(X,Erreurs_pred)
+
+      d_W_and_d_B <- calcul_Gradient(X, mode,nb_indiv)
+    }
 
     #On actualise la valeur des coefficients et du biais :
     vect_W_and_Intercept = vect_W_and_Intercept - eta*d_W_and_d_B
+    #print(vect_W_and_Intercept)
 
 
     #Verifie si on est a la fin d un epoch ou non dans chaque mode
     #Si oui, calcule la deviance et on l'ajoute dans un vecteur pour voir
     #si cela converge et permettra egalement de tracer une fonction de cout
     if(mode=="Online" & iter%%nb_indiv==0){
+
       vect_y_predits = X_Complet%*%vect_W_and_Intercept
       prob_y_predits = 1 / (1 + exp(-vect_y_predits))
       LL= y_Complet * log(prob_y_predits) + (1-y_Complet) * log(1-prob_y_predits)
       newdeviance=-2*sum(LL)
       vector_deviance=c(vector_deviance,newdeviance)
+      #print(vector_deviance)
       if ((abs(deviance-newdeviance)) < tol){
         converge <- TRUE
       }
@@ -155,6 +182,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
       prob_y_predits = 1 / (1 + exp(-vect_y_predits))
       LL= y_Complet * log(prob_y_predits) + (1-y_Complet) * log(1-prob_y_predits)
       newdeviance=-2*sum(LL)
+      #print(newdeviance)
       vector_deviance=c(vector_deviance,newdeviance)
 
       if ((abs(deviance-newdeviance)) < tol){
@@ -165,6 +193,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
     }else if(mode=="Batch_Simple"){
       LL= y_Complet * log(prob_y_predits) + (1-y_Complet) * log(1-prob_y_predits)
       newdeviance=-2*sum(LL)
+      #print(newdeviance)
       vector_deviance=c(vector_deviance,newdeviance)
       if ((abs(deviance-newdeviance)) < tol){
         converge <- TRUE
@@ -178,33 +207,36 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   }
 
   #print(vector_deviance)
-  #plot(vector_deviance,type='l')
+  plot(vector_deviance,type='l')
 
   #Eteindre les moteurs
   parallel::stopCluster(clust)
 
   vect_W = vect_W_and_Intercept[-length(vect_W_and_Intercept)]
   value_B = vect_W_and_Intercept[length(vect_W_and_Intercept)]
+  y=tictoc::toc()
+  time_exe=y$toc-y$tic
 
-  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1)
+  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe)
   class(objet)<-"DyrRegLog"
   return(objet)
-
 }
 
 
-# print.DyrRegLog <- function(object){
-#   #Affichage du poids du vecteur
-#   cat('Poids du vecteur :', object$vect_Poids, "\n")
-#   #Affichage du biais
-#   cat('Biais :', object$Biais, "\n")
-#   #Affichage du formula
-#   cat('formula :',as.character(object$formula))
-# }
-# summary.DyrRegLog<-function(object){
-#   #Affichage de deviance
-#   cat('Dernière valeur de déviance : ', object$vecteur_deviance, "\n")
-#   #Affichage des epochs
-#   cat("Nombre d'itération : ", object$nb_iteration)
-#   plot(object$vecteur_deviance, type ='l')
-# }
+print<- function(object){
+  #Affichage du poids du vecteur
+  cat('Poids du vecteur :', object$vect_Poids, "\n")
+  #Affichage du biais
+  cat('Biais :', object$Biais, "\n")
+  #Affichage du formula
+  cat('formula :',as.character(object$formula))
+}
+summary.DyrRegLog<-function(object){
+  #Affichage de deviance
+  cat('Derniere valeur de deviance : ', object$vecteur_deviance, "\n")
+  #Affichage des epochs
+  cat("Nombre d iteration : ", object$nb_iteration)
+  plot(object$vecteur_deviance, type ='l', "\n")
+  #Affichage du temps d'execution
+  cat("Temps d execution :", object$time_exe)
+}
