@@ -59,7 +59,9 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   data_formula <- data_formula[sample(nrow(data_formula)),]
 
   y_Complet = data_formula[,1]
-  X_Complet=as.matrix(scale(data_formula[,-1]))
+  X_Complet=scale(data_formula[,-1])
+  var_names=colnames(X_Complet)
+  X_Complet=as.matrix(X_Complet)
   X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la maj de l'intercept
 
 
@@ -217,7 +219,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   y=tictoc::toc()
   time_exe=y$toc-y$tic
 
-  objet <- list(vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe)
+  objet <- list(Features = var_names, vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe)
   class(objet)<-"DyrRegLog"
   return(objet)
 }
@@ -232,12 +234,16 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 #'
 #' @export
 print.DyrRegLog<- function(object){
-  #Affichage du poids du vecteur
-  cat('Poids du vecteur :', object$vect_Poids, "\n")
-  #Affichage du biais
-  cat('Biais :', object$Biais, "\n")
   #Affichage du formula
   cat('formula :',as.character(object$formula))
+  #Affichage du poids du vecteur
+  cat("Coefficients : \n")
+  dfPoidsVecteur=as.data.frame(rbind(object$vect_Poids,object$Biais))
+  colnames(dfPoidsVecteur)=c(object$Features,"Intercept")
+  print(dfPoidsVecteur)
+  # cat('Poids du vecteur :', object$vect_Poids, "\n")
+  # #Affichage du biais
+  # cat('Biais :', object$Biais, "\n")
 }
 
 
@@ -255,9 +261,9 @@ print.DyrRegLog<- function(object){
 #' @export
 summary.DyrRegLog<-function(object){
   #Affichage de deviance
-  cat('Derniere valeur de deviance : ', object$vecteur_deviance, "\n")
+  cat('Derniere valeur de deviance : ', object$vecteur_deviance[length(object$vecteur_deviance)], "\n")
   #Affichage des epochs
-  cat("Nombre d iteration : ", object$nb_iteration)
+  cat("Nombre d iteration : ", object$nb_iteration, "\n")
   #plot(object$vecteur_deviance, type ='l', "\n")
   #Affichage du temps d'execution
   cat("Temps d execution :", object$time_exe)
