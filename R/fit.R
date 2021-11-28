@@ -238,7 +238,7 @@ print.DyrRegLog<- function(object){
   cat('formula :',as.character(object$formula))
   #Affichage du poids du vecteur
   cat("Coefficients : \n")
-  dfPoidsVecteur=as.data.frame(rbind(object$vect_Poids,object$Biais))
+  dfPoidsVecteur=as.data.frame(rbind(c(object$vect_Poids,object$Biais)))
   colnames(dfPoidsVecteur)=c(object$Features,"Intercept")
   print(dfPoidsVecteur)
   # cat('Poids du vecteur :', object$vect_Poids, "\n")
