@@ -10,7 +10,7 @@
 #'
 #' @export
 predict <-function(data_test, Train_res,sortie="Class"){
-  #PREDICTION : Y_Chapeauu = 1/(1+exp(f(w,b)))
+  #PREDICTION : Y_Chapeau = 1/(1+exp(f(w,b)))
   #f(w,b) => linear_Model
   data_test = as.matrix(data_test)
 
