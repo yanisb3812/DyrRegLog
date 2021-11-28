@@ -1,11 +1,3 @@
-#' Calcul de Gradient
-#' Une fonction pour calculer une regression logistique avec l'algorithme de la descente de gradient stochastique
-#'
-#' @param X,Type,nb_rows oui oui
-#'
-#' @return la fonction renvoie divers éléments
-#'
-#' @export
 calcul_Gradient <- function(X,Type,nb_rows){ #Erreurs_prediction, nb_rows
 
   #Si on est sur du online nous avons un vecteur, sinon nous on avons une matrice

@@ -2,7 +2,6 @@
 
 S3method(print,DyrRegLog)
 S3method(summary,DyrRegLog)
-export(calcul_Gradient)
 export(fit)
 export(predict)
 import(parallel)
