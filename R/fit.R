@@ -223,20 +223,28 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 }
 
 
-print<- function(object){
+#' Print Override
+#'
+#' A function to override the print method
+#'
+#' @param x Un objet de classe S3
+#'
+#'
+#' @export
+print.DyrRegLog<- function(x){
   #Affichage du poids du vecteur
-  cat('Poids du vecteur :', object$vect_Poids, "\n")
+  cat('Poids du vecteur :', x$vect_Poids, "\n")
   #Affichage du biais
-  cat('Biais :', object$Biais, "\n")
+  cat('Biais :', x$Biais, "\n")
   #Affichage du formula
-  cat('formula :',as.character(object$formula))
+  cat('formula :',as.character(x$formula))
 }
-summary.DyrRegLog<-function(object){
-  #Affichage de deviance
-  cat('Derniere valeur de deviance : ', object$vecteur_deviance, "\n")
-  #Affichage des epochs
-  cat("Nombre d iteration : ", object$nb_iteration)
-  plot(object$vecteur_deviance, type ='l', "\n")
-  #Affichage du temps d'execution
-  cat("Temps d execution :", object$time_exe)
-}
+# summary.DyrRegLog<-function(object){
+#   #Affichage de deviance
+#   cat('Derniere valeur de deviance : ', object$vecteur_deviance, "\n")
+#   #Affichage des epochs
+#   cat("Nombre d iteration : ", object$nb_iteration)
+#   plot(object$vecteur_deviance, type ='l', "\n")
+#   #Affichage du temps d'execution
+#   cat("Temps d execution :", object$time_exe)
+# }
