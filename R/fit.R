@@ -258,7 +258,7 @@ summary.DyrRegLog<-function(object){
   cat('Derniere valeur de deviance : ', object$vecteur_deviance, "\n")
   #Affichage des epochs
   cat("Nombre d iteration : ", object$nb_iteration)
-  plot(object$vecteur_deviance, type ='l', "\n")
+  #plot(object$vecteur_deviance, type ='l', "\n")
   #Affichage du temps d'execution
   cat("Temps d execution :", object$time_exe)
 }
