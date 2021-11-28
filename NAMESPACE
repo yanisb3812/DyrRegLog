@@ -3,6 +3,7 @@
 export(calcul_Gradient)
 export(fit)
 export(predict)
+export(print.DyrRegLog)
 import(parallel)
 import(tictoc)
 importFrom(stats,model.frame)
