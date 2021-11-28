@@ -223,7 +223,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 }
 
 
-print.DyrRegLog <- function(object){
+print <- function(object){
   #Affichage du poids du vecteur
   cat('Poids du vecteur :', object$vect_Poids, "\n")
   #Affichage du biais
