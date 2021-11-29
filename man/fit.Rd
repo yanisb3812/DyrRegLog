@@ -44,3 +44,18 @@ Returns a S3 class object containing the features, the coefficients, the bias, a
 \description{
 A function to compute logistic regression with the stochastic gradient descent algorithm
 }
+\examples{
+data = iris[(iris$Species=="setosa" | iris$Species=="versicolor"),]
+levels(data$Species)
+levels(data$Species) <- c(levels(data$Species), c(0,1))
+data$Species[data$Species=="setosa"] = 1
+data$Species[data$Species=="versicolor"] = 0
+data$Species = as.numeric(data$Species)
+rows <- sample(nrow(data))
+data <- data[rows,]
+data$Species = data$Species -4
+data_train = data[1:70,]
+data_test = data[71:100,]
+rm(data)
+fit(formula=Species~.,data=data_train,eta=0.3,iter_Max=300,mode="Batch_Simple",batch_size=15)
+}
