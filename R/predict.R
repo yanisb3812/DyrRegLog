@@ -9,6 +9,21 @@
 #' @return Returns a Vector of probabilities or classes predicted on test data.
 #'
 #' @export
+#' @examples
+#' data = iris[(iris$Species=="setosa" | iris$Species=="versicolor"),]
+#' levels(data$Species)
+#' levels(data$Species) <- c(levels(data$Species), c(0,1))
+#' data$Species[data$Species=="setosa"] = 1
+#' data$Species[data$Species=="versicolor"] = 0
+#' data$Species = as.numeric(data$Species)
+#' rows <- sample(nrow(data))
+#' data <- data[rows,]
+#' data$Species = data$Species -4
+#' data_train = data[1:70,]
+#' data_test = data[71:100,]
+#' rm(data)
+#' reg_log=fit(formula=Species~.,data=data_train,eta=0.3,iter_Max=300,mode="Batch_Simple",batch_size=15)
+#' predict(data_test[,-5], reg_log,sortie="Class")
 predict <-function(data_test, Train_res,sortie="Class"){
   #PREDICTION : Y_Chapeau = 1/(1+exp(f(w,b)))
   #f(w,b) => linear_Model
