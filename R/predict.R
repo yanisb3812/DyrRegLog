@@ -12,6 +12,11 @@
 predict <-function(data_test, Train_res,sortie="Class"){
   #PREDICTION : Y_Chapeau = 1/(1+exp(f(w,b)))
   #f(w,b) => linear_Model
+  
+  
+  for (i in 1:dim(data_test)[2]){
+    data_test[,i]=(data_test[,i]-Train_res$mean_var[i])/Train_res$sd_var[i]
+  }
   data_test = as.matrix(data_test)
 
   vect_y_predits = -1*((data_test %*% Train_res$vect_Poids)) + Train_res$Biais # -Wx + B

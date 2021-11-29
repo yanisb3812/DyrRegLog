@@ -59,7 +59,14 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   data_formula <- data_formula[sample(nrow(data_formula)),]
 
   y_Complet = data_formula[,1]
-  X_Complet=scale(data_formula[,-1])
+  X_Complet=data_formula[,-1]
+  
+  
+  #Recuperation moyenne et ecart type pour appliquer avant prediction
+  mean_var=colMeans(X_Complet)
+  sd_var=apply(X_Complet, 2, sd)
+  X_Complet=scale(X_Complet)
+  
   var_names=colnames(X_Complet)
   X_Complet=as.matrix(X_Complet)
   X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la maj de l'intercept
@@ -219,7 +226,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   y=tictoc::toc()
   time_exe=y$toc-y$tic
 
-  objet <- list(Features = var_names, vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe)
+  objet <- list(Features = var_names, vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe, mean_var=mean_var,sd_var=sd_var)
   class(objet)<-"DyrRegLog"
   return(objet)
 }
