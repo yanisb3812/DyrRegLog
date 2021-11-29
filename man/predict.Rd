@@ -7,15 +7,15 @@
 predict(data_test, Train_res, sortie = "Class")
 }
 \arguments{
-\item{data_test}{A test data frame}
+\item{data_test}{A test data frame.}
 
-\item{Train_res}{A demander}
+\item{Train_res}{Fitted model from data train using logistic regression.}
 
-\item{sortie}{A demander}
+\item{sortie}{"Proba" : return probabilities or "Class" : return classes predicted on test data.}
 }
 \value{
-la fonction renvoie divers elements
+predict function returns a Vector of probabilities or classes predicted on test data.
 }
 \description{
-A function to predict a model using the logistic regression with the stochastic gradient descent algorithm
+A function to predict classes using the logistic regression with the stochastic gradient descent algorithm.
 }

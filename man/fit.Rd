@@ -30,9 +30,9 @@ fit(
 
 \item{batch_size}{Size of the batch.}
 
-\item{tol}{A demander.}
+\item{tol}{Value that represents the stopping criterion. If the difference between the deviance from the previous epoch and the deviance from the current epoch is less than tol we suppose that the deviance is minimized and the training is stopped,}
 
-\item{coefs}{A demander.}
+\item{coefs}{Initialized coefficients which will be learned by the stochastic gradient descent.}
 
 \item{intercept}{Logical. Should an intercept be included in the null model ?}
 
