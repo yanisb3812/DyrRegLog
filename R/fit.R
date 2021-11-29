@@ -4,7 +4,7 @@
 #'
 #' @param formula An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.
 #' @param data A data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
-#' @param eta A demander.
+#' @param eta The learning rate. Represents the speed of the descend gradient
 #' @param iter_Max Maximum iteration realized by the function.
 #' @param mode The mode to be used in fitting the model (Batch_Simple, Mini_Batch, Online). The default mode is Online.
 #' @param batch_size Size of the batch.
@@ -13,7 +13,7 @@
 #' @param intercept Logical. Should an intercept be included in the null model ?
 #' @param nb_Coeurs Number of chores that have to be used by .
 #'
-#' @return la fonction renvoie divers elements
+#' @return Returns a S3 class object containing the features, the coefficients, the bias, a vector of deviances, the number of iterations done by the algorith and two variables to apply the same transformation to the data test than the data train.
 #' @import parallel
 #' @import tictoc
 #' @importFrom stats model.frame
@@ -60,13 +60,13 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 
   y_Complet = data_formula[,1]
   X_Complet=data_formula[,-1]
-  
-  
+
+
   #Recuperation moyenne et ecart type pour appliquer avant prediction
   mean_var=colMeans(X_Complet)
   sd_var=apply(X_Complet, 2, sd)
   X_Complet=scale(X_Complet)
-  
+
   var_names=colnames(X_Complet)
   X_Complet=as.matrix(X_Complet)
   X_Complet = cbind(X_Complet, rep(1,nrow(X_Complet))) # Rajout d'un vecteur de 111111111 pour la maj de l'intercept
@@ -229,28 +229,6 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   objet <- list(Features = var_names, vect_Poids = vect_W, Biais = value_B, formula = formula, vecteur_deviance = vector_deviance, nb_iteration=iter+1, time_exe = time_exe, mean_var=mean_var,sd_var=sd_var)
   class(objet)<-"DyrRegLog"
   return(objet)
-}
-
-
-#' Print Override
-#'
-#' A function to override the print method
-#'
-#' @param object Un objet de classe S3
-#'
-#'
-#' @export
-print.DyrRegLog<- function(object){
-  #Affichage du formula
-  cat('formula :',as.character(object$formula), "\n\n")
-  #Affichage du poids du vecteur
-  cat("Coefficients : \n")
-  dfPoidsVecteur=as.data.frame(rbind(c(object$vect_Poids,object$Biais)))
-  colnames(dfPoidsVecteur)=c(object$Features,"Intercept")
-  print(dfPoidsVecteur)
-  # cat('Poids du vecteur :', object$vect_Poids, "\n")
-  # #Affichage du biais
-  # cat('Biais :', object$Biais, "\n")
 }
 
 

@@ -6,14 +6,14 @@
 #' @param Train_res Fitted model from data train using logistic regression.
 #' @param sortie "Proba" : return probabilities or "Class" : return classes predicted on test data.
 #'
-#' @return predict function returns a Vector of probabilities or classes predicted on test data.
+#' @return Returns a Vector of probabilities or classes predicted on test data.
 #'
 #' @export
 predict <-function(data_test, Train_res,sortie="Class"){
   #PREDICTION : Y_Chapeau = 1/(1+exp(f(w,b)))
   #f(w,b) => linear_Model
-  
-  
+
+
   for (i in 1:dim(data_test)[2]){
     data_test[,i]=(data_test[,i]-Train_res$mean_var[i])/Train_res$sd_var[i]
   }
