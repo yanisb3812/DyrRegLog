@@ -75,6 +75,9 @@ Now we can call the fit function of DyrRegLog package to fit our model to a Logi
 ```
 test_fit = fit(formula = Outcome~. , data = data , eta = 0.3 , iter_Max = 10000 , mode = "Batch_Simple" , batch_size = 20, nb_Coeurs = 1 )
 ```
+We can also visualize the plot of the deviances.
+![image](https://user-images.githubusercontent.com/72911055/143915963-6803e291-85b4-4ef8-a339-8e311ca79d3d.png)
+
 
 The print and summary functions are overridden.
 So, if we print the variable containing the fit function, it will display the formula and the coefficients.
