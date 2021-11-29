@@ -1,12 +1,12 @@
 #' Logistic Regression
 #'
-#' A function to predict a model using the logistic regression with the stochastic gradient descent algorithm
+#' A function to predict classes using the logistic regression with the stochastic gradient descent algorithm.
 #'
-#' @param data_test A test data frame
-#' @param Train_res A demander
-#' @param sortie A demander
+#' @param data_test A test data frame.
+#' @param Train_res Fitted model from data train using logistic regression.
+#' @param sortie "Proba" : return probabilities or "Class" : return classes predicted on test data.
 #'
-#' @return la fonction renvoie divers elements
+#' @return predict function returns a Vector of probabilities or classes predicted on test data.
 #'
 #' @export
 predict <-function(data_test, Train_res,sortie="Class"){

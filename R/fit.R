@@ -8,8 +8,8 @@
 #' @param iter_Max Maximum iteration realized by the function.
 #' @param mode The mode to be used in fitting the model (Batch_Simple, Mini_Batch, Online). The default mode is Online.
 #' @param batch_size Size of the batch.
-#' @param tol A demander.
-#' @param coefs A demander.
+#' @param tol Value that represents the stopping criterion. If the difference between the deviance from the previous epoch and the deviance from the current epoch is less than tol we suppose that the deviance is minimized and the training is stopped,
+#' @param coefs Initialized coefficients which will be learned by the stochastic gradient descent.
 #' @param intercept Logical. Should an intercept be included in the null model ?
 #' @param nb_Coeurs Number of chores that have to be used by .
 #'
