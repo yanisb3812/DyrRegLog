@@ -34,9 +34,9 @@ fit(
 
 \item{coefs}{Initialized coefficients which will be learned by the stochastic gradient descent.}
 
-\item{intercept}{Logical. Should an intercept be included in the null model ?}
+\item{intercept}{Initialized bias which will be learned by algorithm.}
 
-\item{nb_Coeurs}{Number of chores that have to be used by .}
+\item{nb_Coeurs}{Number of chores that have to be used by.}
 }
 \value{
 Returns a S3 class object containing the features, the coefficients, the bias, a vector of deviances, the number of iterations done by the algorith and two variables to apply the same transformation to the data test than the data train.
