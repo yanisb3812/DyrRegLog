@@ -18,7 +18,7 @@ predict <-function(data_test, Train_res,sortie="Class"){
   #   data_test[,i]=(data_test[,i]-Train_res$mean_var[i])/Train_res$sd_var[i]
   # }
   data_test = as.matrix(data_test)
-
+  print()
   vect_y_predits = -1*((data_test %*% Train_res$vect_Poids)) + Train_res$Biais # -Wx + B
   Y_Predicted_Probas = 1/(1+exp(vect_y_predits)) #Liste des probabilites
   Y_Predicted_Classes = round(Y_Predicted_Probas)
