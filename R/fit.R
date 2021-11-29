@@ -241,7 +241,7 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
 #' @export
 print.DyrRegLog<- function(object){
   #Affichage du formula
-  cat('formula :',as.character(object$formula), "\n\n")
+  cat('Formula :',as.character(object$formula), "\n\n")
   #Affichage du poids du vecteur
   cat("Coefficients : \n")
   dfPoidsVecteur=as.data.frame(rbind(c(object$vect_Poids,object$Biais)))
@@ -266,11 +266,11 @@ print.DyrRegLog<- function(object){
 #' @export
 summary.DyrRegLog<-function(object){
   #Affichage de deviance
-  cat('Derniere valeur de deviance : ', object$vecteur_deviance[length(object$vecteur_deviance)], "\n\n")
+  cat('Last deviance value : ', object$vecteur_deviance[length(object$vecteur_deviance)], "\n\n")
   #Affichage des epochs
-  cat("Nombre d iteration : ", object$nb_iteration, "\n\n")
+  cat("Number of iterations : ", object$nb_iteration, "\n\n")
   #plot(object$vecteur_deviance, type ='l', "\n")
   #Affichage du temps d'execution
-  cat("Temps d execution :", object$time_exe)
+  cat("Computing time :", object$time_exe)
 }
 
