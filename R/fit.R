@@ -231,6 +231,26 @@ fit <- function(formula,data, eta = 0.3 , iter_Max=200,mode="Online",batch_size=
   return(objet)
 }
 
+#' Print Override
+#'
+#' A function to override the print method
+#'
+#' @param object Un objet de classe S3
+#'
+#'
+#' @export
+print.DyrRegLog<- function(object){
+  #Affichage du formula
+  cat('formula :',as.character(object$formula), "\n\n")
+  #Affichage du poids du vecteur
+  cat("Coefficients : \n")
+  dfPoidsVecteur=as.data.frame(rbind(c(object$vect_Poids,object$Biais)))
+  colnames(dfPoidsVecteur)=c(object$Features,"Intercept")
+  print(dfPoidsVecteur)
+  # cat('Poids du vecteur :', object$vect_Poids, "\n")
+  # #Affichage du biais
+  # cat('Biais :', object$Biais, "\n")
+}
 
 
 

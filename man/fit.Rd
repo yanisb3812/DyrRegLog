@@ -22,7 +22,7 @@ fit(
 
 \item{data}{A data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.}
 
-\item{eta}{A demander.}
+\item{eta}{The learning rate. Represents the speed of the descend gradient}
 
 \item{iter_Max}{Maximum iteration realized by the function.}
 
@@ -39,7 +39,7 @@ fit(
 \item{nb_Coeurs}{Number of chores that have to be used by .}
 }
 \value{
-la fonction renvoie divers elements
+Returns a S3 class object containing the features, the coefficients, the bias, a vector of deviances, the number of iterations done by the algorith and two variables to apply the same transformation to the data test than the data train.
 }
 \description{
 A function to compute logistic regression with the stochastic gradient descent algorithm

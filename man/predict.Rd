@@ -14,7 +14,7 @@ predict(data_test, Train_res, sortie = "Class")
 \item{sortie}{"Proba" : return probabilities or "Class" : return classes predicted on test data.}
 }
 \value{
-predict function returns a Vector of probabilities or classes predicted on test data.
+Returns a Vector of probabilities or classes predicted on test data.
 }
 \description{
 A function to predict classes using the logistic regression with the stochastic gradient descent algorithm.
