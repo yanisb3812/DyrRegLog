@@ -54,7 +54,7 @@ data.frame':	768 obs. of  9 variables:
  
  We can see that our variables are not on the same scale, we'll resolve that later on.
  ```
- After that, we'll define a size of sample
+ After that, we'll define a size of sample.
  
  ```
  smp_size <- floor(0.70 * nrow(data))
