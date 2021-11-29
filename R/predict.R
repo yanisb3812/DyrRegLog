@@ -2,8 +2,8 @@
 #'
 #' A function to predict classes using the logistic regression with the stochastic gradient descent algorithm.
 #'
-#' @param data_test A test data frame.
-#' @param Train_res Fitted model from data train using logistic regression.
+#' @param data_test A data frame which we want predict class.
+#' @param Train_res DyrRegLog Object (Fitted model from data train using logistic regression).
 #' @param sortie "Proba" : return probabilities or "Class" : return classes predicted on test data.
 #'
 #' @return Returns a Vector of probabilities or classes predicted on test data.
