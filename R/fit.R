@@ -10,8 +10,8 @@
 #' @param batch_size Size of the batch.
 #' @param tol Value that represents the stopping criterion. If the difference between the deviance from the previous epoch and the deviance from the current epoch is less than tol we suppose that the deviance is minimized and the training is stopped,
 #' @param coefs Initialized coefficients which will be learned by the stochastic gradient descent.
-#' @param intercept Logical. Should an intercept be included in the null model ?
-#' @param nb_Coeurs Number of chores that have to be used by .
+#' @param intercept Initialized bias which will be learned by algorithm.
+#' @param nb_Coeurs Number of chores that have to be used by.
 #'
 #' @return Returns a S3 class object containing the features, the coefficients, the bias, a vector of deviances, the number of iterations done by the algorith and two variables to apply the same transformation to the data test than the data train.
 #' @import parallel
